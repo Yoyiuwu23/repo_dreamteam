@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Trabajadores - PayrollSim</title>
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100">
+            <div class="col-md-6 col-lg-5">
+                <!-- Formulario dentro de Card centrado -->
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h3 class="mb-0">
+                            <i class="bi bi-person-plus me-2"></i>
+                            Registro de Trabajadores
+                        </h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <form>
+                            <!-- Campo RUT -->
+                            <div class="mb-3">
+                                <label for="rut" class="form-label">RUT</label>
+                                <input type="text" class="form-control" id="rut" placeholder="12.345.678-9" required>
+                            </div>
+                            
+                            <!-- Campo Nombre completo -->
+                            <div class="mb-3">
+                                <label for="nombre" class="form-label">Nombre Completo</label>
+                                <input type="text" class="form-control" id="nombre" placeholder="Ingrese su nombre completo" required>
+                            </div>
+                            
+                            <!-- Campo Fecha de ingreso laboral -->
+                            <div class="mb-3">
+                                <label for="fechaIngreso" class="form-label">Fecha de Ingreso Laboral</label>
+                                <input type="date" class="form-control" id="fechaIngreso" required>
+                            </div>
+                            
+                            <!-- Select con empresas del holding -->
+                            <div class="mb-4">
+                                <label for="empresa" class="form-label">Empresa del Holding</label>
+                                <select class="form-select" id="empresa" required>
+                                    <option value="">Seleccione una empresa</option>
+                                    <option value="payrollsim-tech">PayrollSim Technologies SpA</option>
+                                    <option value="payrollsim-consulting">PayrollSim Consulting Ltda</option>
+                                    <option value="payrollsim-solutions">PayrollSim Solutions SA</option>
+                                    <option value="payrollsim-services">PayrollSim Services EIRL</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Botón de registro -->
+                            <button type="submit" class="btn btn-primary w-100 mb-3">
+                                <i class="bi bi-person-check me-2"></i>
+                                Registrarse
+                            </button>
+                        </form>
+                        
+                        <!-- Link para iniciar sesión -->
+                        <div class="text-center">
+                            <p class="mb-0 text-muted">
+                                ¿Ya tienes cuenta? 
+                                <a href="login.html" class="text-decoration-none">Inicia sesión aquí</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Link para volver al home -->
+                <div class="text-center mt-3">
+                    <a href="index.html" class="text-muted text-decoration-none">
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Volver al inicio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
