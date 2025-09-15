@@ -39,3 +39,25 @@ def delete_item(item_index: int):
         raise HTTPException(status_code=404, detail="Ítem no encontrado")
     deleted_item = items.pop(item_index)
     return {"msg": "Ítem eliminado","item": deleted_item}
+
+CREATE DATABASE un2;
+CREATE TABLE usuarios (id int auto_increment primary key,
+nombre varchar(80),
+fecha_inicio date,
+rut varchar(18)
+);
+
+try 
+    conexion = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="un2"
+    )
+    cur = conexion.cursor()
+    for (id,nombre) in cur
+        print(f"id {id}, nombre: {nombre}")
+    if conexion.is_conected():
+        print("Conexion exitosa a la base de datos")
+except mysql.connector.Error as e:
+    print(f"Error al conectar: {e}")
