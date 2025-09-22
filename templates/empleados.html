@@ -1,46 +1,210 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-  </head>
-  <body>
- 
-    <div class="container-fluid">
-        <div class="row min-vh-100">
-            <div class="col-md-9 d-flex align-items-center justify-content-center">
-                <div class="w-75">
-                    <img src="https://static.vecteezy.com/system/resources/previews/023/617/247/non_2x/coffee-shop-logo-free-png.png" alt="Coffee Shop Logo" class="mb-4" style="max-width: 100px;"/>
-                    <h1 class="mb-4" style="color:#C5A556">¡Buenas Tardes!</h1>
-                    <div class="row">
-                        <form class="col-md-5" action="/procesalogin.html" method="POST">
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email address</label>
-                            <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com">
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" name="password" id="password" placeholder="Password">
-                        </div>
-                        <button class="w-100 btn btn-outline-danger" type="submit">Login</button>
-                        </form>
-                    </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Empleados</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <style>
+        body {
+           
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            margin: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .form-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .custom-btn {
+            background: #21BDED;
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .custom-btn:hover {
+            background: #1a9bc7;
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .table-header-custom {
+            background: linear-gradient(135deg, #21BDED, #1a9bc7);
+            color: white;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #21BDED;
+            box-shadow: 0 0 0 0.2rem rgba(33, 189, 237, 0.25);
+        }
+        
+        .btn-action {
+            border: none;
+            background: none;
+            padding: 8px 12px;
+            margin: 0 2px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn-edit {
+            color: #21BDED;
+        }
+        
+        .btn-edit:hover {
+            background: rgba(33, 189, 237, 0.1);
+        }
+        
+        .btn-delete {
+            color: #dc3545;
+        }
+        
+        .btn-delete:hover {
+            background: rgba(220, 53, 69, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg" data-bs-theme="dark" style="background-color: #21BDED;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><img src="https://img.freepik.com/vector-gratis/dos-hojas-azules_78370-6256.jpg" alt="Logo" style="max-width: 40px;"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Simulador</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Trabajadores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Liquidaciones</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="main-container">
+        <!-- Formulario de agregar empleado -->
+        <div class="form-section p-4 m-3">
+            <div class="row g-3 mb-3">
+                <div class="col-md-6 col-lg-3">
+                    <label for="nombres" class="form-label fw-semibold">Nombres</label>
+                    <input type="text" class="form-control" id="nombres" placeholder="Ingrese nombres">
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <label for="apellidos" class="form-label fw-semibold">Apellidos</label>
+                    <input type="text" class="form-control" id="apellidos" placeholder="Ingrese apellidos">
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <label for="empresa" class="form-label fw-semibold">Empresa</label>
+                    <select class="form-select" id="empresa">
+                        <option value="">Seleccionar empresa</option>
+                        <option value="Empresa 1">Empresa 1</option>
+                        <option value="Empresa 2">Empresa 2</option>
+                        <option value="Empresa 3">Empresa 3</option>
+                    </select>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <label for="fecha_nacimiento" class="form-label fw-semibold">Fecha de Nacimiento</label>
+                    <input type="date" class="form-control" id="fecha_nacimiento">
                 </div>
             </div>
-            <div class="col-md-3 d-none d-md-block p-0">
-                <div class="h-100 w-100 text-white d-flex justify-content-center align-items-center text-center" style="background: url(https://images.unsplash.com/photo-1553292218-4892c2e7e1ae?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D) no-repeat center center/cover;">
-                    <div class="bg-dark bg-opacity-50 p-4 rounded" style="margin-left: 10%; margin-right: 10%;">
-                        <h2>En 'tu pausa de café'</h2>
-                        <p>Disfruta de un momento de tranquilidad y sabor con nuestras selecciones de café.
-                            Av. Bernardo O'Higgins 12122, Santiago, Chile.
-                        </p>
+            
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label for="rut" class="form-label fw-semibold">RUT</label>
+                    <input type="text" class="form-control" id="rut" placeholder="Ej: 12.345.678-9">
+                </div>
+                <div class="col-md-6">
+                    <label for="direccion" class="form-label fw-semibold">Dirección</label>
+                    <input type="text" class="form-control" id="direccion" placeholder="Ingrese dirección">
+                </div>
+            </div>
+            
+            <button class="btn custom-btn px-4 py-2 fw-semibold" onclick="crearEmpleado()">CREAR EMPLEADO</button>
+        </div>
+        
+        <!-- Tabla de empleados -->
+        <div class="m-3">
+            <div class="card shadow">
+                <div class="card-header table-header-custom p-3">
+                    <h4 class="mb-0 fw-bold">Empleados</h4>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="fw-semibold">ID</th>
+                                    <th class="fw-semibold">NOMBRES</th>
+                                    <th class="fw-semibold">APELLIDOS</th>
+                                    <th class="fw-semibold">RUT</th>
+                                    <th class="fw-semibold">FECHA NACIMIENTO</th>
+                                    <th class="fw-semibold">DIRECCIÓN</th>
+                                    <th class="fw-semibold">EMPRESA</th>
+                                    <th class="fw-semibold">CONTRATO</th>
+                                    <th class="fw-semibold">FECHA INICIO</th>
+                                    <th class="fw-semibold">FECHA TERMINO</th>
+                                    <th class="fw-semibold">SUELDO BASE</th>
+                                    <th class="fw-semibold">AFP</th>
+                                    <th class="fw-semibold">SALUD</th>
+                                    <th class="fw-semibold">AFC</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody id="empleados-tbody">
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
-  </body>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
 </html>

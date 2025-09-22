@@ -15,3 +15,8 @@ def login(request: Request):
 @router.get("/home", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse("home.html", {"request": request, "titulo": "Home | Finantel Group"})
+
+# Página de empleados
+@router.get("/empleados", response_class=HTMLResponse)
+def empleados(request: Request):
+    return templates.TemplateResponse("empleados.html", {"request": request, "titulo": "Empleados | Finantel Group"})    
