@@ -2,6 +2,7 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from models.empleados import EmpleadosModel
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -19,4 +20,4 @@ def home(request: Request):
 # Página de empleados
 @router.get("/empleados", response_class=HTMLResponse)
 def empleados(request: Request):
-    return templates.TemplateResponse("empleados.html", {"request": request, "titulo": "Empleados | Finantel Group"})    
+    return templates.TemplateResponse("empleados.html", {"request": request, "titulo": "Empleados | Finantel Group", "empleados": EmpleadosModel.get_all()})
