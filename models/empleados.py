@@ -1,3 +1,4 @@
+# models/empleados.py
 from core.database import get_connection
 from dto.empleado import EmpleadoCreate, EmpleadoResponse
 from typing import List
@@ -19,7 +20,6 @@ class EmpleadosModel:
                 "JOIN contratos c ON e.id = c.empleado_id"
             )
             empleados = cursor.fetchall()
-            # Mapear resultados a modelos Pydantic
             return [EmpleadoResponse(**emp) for emp in empleados]
         finally:
             cursor.close()
