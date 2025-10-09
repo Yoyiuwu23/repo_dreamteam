@@ -8,10 +8,6 @@ from models.usuarios import UsuariosModel
 router = APIRouter(prefix="/usuarios", tags=["Usuarios"])
 templates = Jinja2Templates(directory="templates")
 
-@router.get("/login", response_class=HTMLResponse)
-def login_form(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request, "titulo": "Login | Finantel Group", "error": None})
-
 @router.post("/login", response_class=HTMLResponse)
 def login_post(request: Request, email: str = Form(...), password: str = Form(...)):
     data = UsuarioLogin(email=email, password=password)
