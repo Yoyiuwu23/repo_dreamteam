@@ -1,18 +1,16 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
-from routers import empleados, public
+# main.py
+from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from routers import empleados, public, usuarios
 
-app = FastAPI()
+app = FastAPI(title="Finantel Group")
 
 app.mount(
-    "/assets",  
+    "/assets",   
     StaticFiles(directory="templates/assets"),
     name="assets"
 )
-templates = Jinja2Templates(directory="templates")  
-# Rutas privadas 
-app.include_router(empleados.router, prefix="/api/v1")
-# Rutas públicas
-app.include_router(public.router)
+# Rutas privadas y públicas
+app.include_router(empleados.router, prefix="/api/v1")  # empleados API
+app.include_router(public.router)                       # landing y páginas públicas
+app.include_router(usuarios.router)                     # login y login API

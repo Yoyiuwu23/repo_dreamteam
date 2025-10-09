@@ -1,44 +1,87 @@
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>{{ titulo }}</title>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{{ titulo }}</title>
         <link rel="icon" href="https://img.freepik.com/vector-gratis/dos-hojas-azules_78370-6256.jpg" type="image/png">
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-	</head>
-	<body>
-		<div class="container-fluid">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+
+        <style>
+            /* Colores y ajustes pequeños centralizados */
+            :root {
+                --brand-color: #21BDED;
+                --sidebar-overlay: rgba(28, 44, 69, 0.5);
+            }
+
+            .brand-color {
+                color: var(--brand-color) !important;
+            }
+
+            .btn-brand {
+                background-color: var(--brand-color);
+                border-color: var(--brand-color);
+            }
+
+            .sidebar-hero {
+                background: url(https://plus.unsplash.com/premium_photo-1700607978783-709240aa40fb?q=80&w=627&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D) no-repeat center center/cover;
+            }
+
+            .sidebar-overlay-box {
+                margin-left: 10%;
+                margin-right: 10%;
+                background-color: var(--sidebar-overlay);
+            }
+
+            /* Pequeña mejora de la imagen del logo */
+            .logo-img {
+                max-width: 100px;
+                height: auto;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container-fluid">
             <div class="row min-vh-100">
-                <div class="col-md-9 d-flex align-items-center justify-content-center">
+                <main class="col-md-9 d-flex align-items-center justify-content-center" role="main">
                     <div class="w-75">
-                        <img src="https://img.freepik.com/vector-gratis/dos-hojas-azules_78370-6256.jpg" alt="Coffee Shop Logo" class="mb-4" style="max-width: 100px;"/>
-                        <h1 class="mb-4" style="color:#21BDED">¡Buenas Tardes!</h1>
+                        <img src="https://img.freepik.com/vector-gratis/dos-hojas-azules_78370-6256.jpg" alt="Logo Finantel Group" class="mb-4 logo-img" />
+                        <h1 class="mb-4 brand-color">¡Buenas Tardes!</h1>
+
                         <div class="row">
-                            <form class="col-md-5" action="/home" method="POST">
+                            <form class="col-md-5" action="/usuarios/login" method="POST" aria-label="Formulario de inicio de sesión">
                                 <div class="mb-3">
-                                    <label for="email" class="form-label">Email address</label>
-                                    <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com"> 
+                                    <label for="email" class="form-label">Correo electrónico</label>
+                                    <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com" required autofocus>
                                 </div>
+
                                 <div class="mb-3">
-                                    <label for="password" class="form-label">Password</label>
-                                    <input type="password" class="form-control" name="password" id="password" placeholder="Password"> 
+                                    <label for="password" class="form-label">Contraseña</label>
+                                    <input type="password" class="form-control" name="password" id="password" placeholder="Contraseña" required>
                                 </div>
-                                    <button class="w-100 btn btn-primary" style="background-color: #21BDED;border-color:#21BDED" type="submit">Ingresar</button>
+
+                                <button class="w-100 btn btn-primary btn-brand" type="submit">Ingresar</button>
+
+                                {% if error %}
+                                    <div class="mt-2 text-danger" role="alert">{{ error }}</div>
+                                {% endif %}
                             </form>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-3 d-none d-md-block p-0">
-                    <div class="h-100 w-100 text-white d-flex justify-content-center align-items-center text-center" style="background: url(https://plus.unsplash.com/premium_photo-1700607978783-709240aa40fb?q=80&w=627&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D) no-repeat center center/cover;">
-                        <div style="margin-left: 10%; margin-right: 10%; background-color: rgba(28, 44, 69, 0.5);" class="p-4 rounded" >
-                                <h2>Finantel Group</h2>
-                                <p>Gestionamos tus liquidaciones y finanzas de manera clara y segura, para que tu sueldo llegue siempre a tiempo y sin complicaciones.</p>
+                </main>
+
+                <aside class="col-md-3 d-none d-md-block p-0" aria-hidden="true">
+                    <div class="h-100 w-100 text-white d-flex justify-content-center align-items-center text-center sidebar-hero">
+                        <div class="p-4 rounded sidebar-overlay-box">
+                            <h2>Finantel Group</h2>
+                            <p>Gestionamos tus liquidaciones y finanzas de manera clara y segura, para que tu sueldo llegue siempre a tiempo y sin complicaciones.</p>
                         </div>
                     </div>
-                </div>
+                </aside>
             </div>
         </div>
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
     </body>
 </html>

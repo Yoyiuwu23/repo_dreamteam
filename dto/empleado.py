@@ -21,3 +21,4 @@ class EmpleadoCreate(BaseModel):
 
 class EmpleadoResponse(EmpleadoCreate):
     id: int
+
