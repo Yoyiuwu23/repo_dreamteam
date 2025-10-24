@@ -1,0 +1,5 @@
+fastapi[standard]
+uvicorn
+mysql-connector-python
+jinja2
+reportlab
