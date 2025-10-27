@@ -1,6 +1,8 @@
 # Ignorar todos los archivos y carpetas que comiencen con un punto
 .*
 
+# Ignorar archivos compilados de Python
+*.pyc
 
 # Excluir el archivo .gitignore de la regla anterior
 !.gitignore
