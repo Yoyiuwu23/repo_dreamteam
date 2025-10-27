@@ -1,0 +1,6 @@
+# Ignorar todos los archivos y carpetas que comiencen con un punto
+.*
+
+
+# Excluir el archivo .gitignore de la regla anterior
+!.gitignore

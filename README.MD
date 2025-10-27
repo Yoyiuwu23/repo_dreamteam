@@ -16,18 +16,23 @@ pip install mysql-connector-python
 pip install jinja2
 ```
 
-## 4. Ejecución del script de la base de datos
+## 4. Instalación de ReportLab para generación de PDF
+```
+pip install reportlab
+```
+
+## 5. Ejecución del script de la base de datos
 
 Ejecuta el script `sql/schema.sql` en tu servidor MySQL para crear las tablas necesarias.
 
-## 5. CheckList Librerías a instalar para el proyecto
+## 6. CheckList Librerías a instalar para el proyecto
 
 - [_] fastapi[standard]
 - [_] uvicorn
 - [_] mysql-connector-python
 - [_] Jinja2
 
-## 6. Notas
+## 7. Notas
 
 - Solo se utilizarán `Cursor` y `mysql-connector-python` para la conexión y manejo de la base de datos.
 - Se usará `Jinja2` para las vistas.
