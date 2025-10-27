@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #fcfcf9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            margin-top: 30px;
+        }
+        .btn-pdf {
+            background-color: #21808d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .btn-pdf:hover {
+            background-color: #1d7480;
+            color: white;
+        }
+        .table {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .table thead {
+            background-color: #21808d;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Liquidaciones de Sueldo</h1>
+        <p class="text-muted">Finantel Group - Sistema de RRHH</p>
+        
+        <div class="mb-3">
+            <a href="/api/v1/liquidacion/pdf" class="btn btn-pdf" target="_blank">
+                📄 Generar PDF
+            </a>
+        </div>
+        
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>RUT</th>
+                    <th>Cargo</th>
+                    <th>Sueldo Base</th>
+                    <th>Horas Extras</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for liq in liquidaciones %}
+                <tr>
+                    <td>{{ liq.nombre }}</td>
+                    <td>{{ liq.rut }}</td>
+                    <td>{{ liq.cargo }}</td>
+                    <td>${{ "{:,.0f}".format(liq.sueldo_base) }}</td>
+                    <td>${{ "{:,.0f}".format(liq.horas_extras) }}</td>
+                    <td><strong>${{ "{:,.0f}".format(liq.total) }}</strong></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
