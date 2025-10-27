@@ -5,6 +5,42 @@ from typing import List
 
 class LiquidacionModel:
     @staticmethod
+    def get_by_id(empleado_id: int) -> LiquidacionResponse:
+        """GET: Obtiene la liquidación de un empleado específico"""
+        cnx = get_connection()
+        if not cnx:
+            return None
+        
+        cursor = cnx.cursor(dictionary=True)
+        try:
+            cursor.execute(
+                """
+                SELECT 
+                    e.id,
+                    CONCAT(e.nombres, ' ', e.apellidos) as nombre,
+                    e.rut,
+                    'Empleado' as cargo,
+                    c.sueldo_base,
+                    0 as horas_extras
+                FROM empleados e
+                JOIN contratos c ON e.id = c.empleado_id
+                WHERE e.id = %s
+                """,
+                (empleado_id,)
+            )
+            liquidacion = cursor.fetchone()
+            
+            if not liquidacion:
+                return None
+                
+            response = LiquidacionResponse(**liquidacion)
+            response.calcular_total()
+            return response
+        finally:
+            cursor.close()
+            cnx.close()
+
+    @staticmethod
     def get_all() -> List[LiquidacionResponse]:
         """GET: Obtiene todas las liquidaciones de la base de datos"""
         cnx = get_connection()

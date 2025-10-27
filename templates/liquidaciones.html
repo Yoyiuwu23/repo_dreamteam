@@ -58,12 +58,6 @@
         <h1>Liquidaciones de Sueldo</h1>
         <p class="text-muted">Finantel Group - Sistema de RRHH</p>
         
-        <div class="mb-3">
-            <a href="/api/v1/liquidacion/pdf" class="btn btn-pdf" target="_blank">
-                📄 Generar PDF
-            </a>
-        </div>
-        
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -73,6 +67,7 @@
                     <th>Sueldo Base</th>
                     <th>Horas Extras</th>
                     <th>Total</th>
+                    <th>PDF</th>
                 </tr>
             </thead>
             <tbody>
@@ -84,6 +79,11 @@
                     <td>${{ "{:,.0f}".format(liq.sueldo_base) }}</td>
                     <td>${{ "{:,.0f}".format(liq.horas_extras) }}</td>
                     <td><strong>${{ "{:,.0f}".format(liq.total) }}</strong></td>
+                    <td>
+                        <a href="/api/v1/liquidacion/pdf/{{ liq.id }}" class="btn btn-pdf btn-sm" target="_blank">
+                            📄 PDF
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

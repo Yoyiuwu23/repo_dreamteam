@@ -6,6 +6,7 @@ from dto.liquidacion import LiquidacionCreate, LiquidacionResponse
 from models.liquidacion import LiquidacionModel
 from util.liquidacion_service import LiquidacionService
 from typing import List
+from datetime import datetime
 import os
 
 router = APIRouter(prefix="/liquidacion", tags=["Liquidacion"])
@@ -24,28 +25,28 @@ def create_liquidacion(liquidacion: LiquidacionCreate):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/pdf", response_class=FileResponse)
-def generar_pdf_liquidaciones():
+@router.get("/pdf/{empleado_id}", response_class=FileResponse)
+def generar_pdf_liquidacion(empleado_id: int):
     """
-    GET: Genera un PDF con todas las liquidaciones
-    Este endpoint obtiene los datos (GET) y los imprime en PDF
+    GET: Genera un PDF con la liquidación de un empleado específico
+    Este endpoint obtiene los datos (GET) por ID y los imprime en PDF
     """
     try:
-        # GET: Obtener los datos
-        liquidaciones = LiquidacionModel.get_all()
+        # GET: Obtener los datos del empleado específico
+        liquidacion = LiquidacionModel.get_by_id(empleado_id)
         
-        if not liquidaciones:
-            raise HTTPException(status_code=404, detail="No hay liquidaciones disponibles")
+        if not liquidacion:
+            raise HTTPException(status_code=404, detail=f"No se encontró la liquidación para el empleado {empleado_id}")
         
-        # Generar PDF con el servicio
-        filepath = LiquidacionService.generar_pdf(liquidaciones)
+        # Generar PDF con el servicio (enviamos como lista de un elemento)
+        filepath = LiquidacionService.generar_pdf([liquidacion])
         
         # Retornar el archivo
         return FileResponse(
             filepath,
             media_type='application/pdf',
-            filename=os.path.basename(filepath),
-            headers={"Content-Disposition": f"attachment; filename={os.path.basename(filepath)}"}
+            filename=f"liquidacion_{empleado_id}_{datetime.now().strftime('%Y%m%d')}.pdf",
+            headers={"Content-Disposition": f"attachment; filename=liquidacion_{empleado_id}.pdf"}
         )
         
     except Exception as e:
