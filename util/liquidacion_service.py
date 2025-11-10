@@ -1,10 +1,10 @@
 # util/liquidacion_service.py
-from reportlab.lib.pagesizes import letter, A4
+from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
-from reportlab.lib.units import inch
+from reportlab.lib.units import inch, cm
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from datetime import datetime
 import os
 
@@ -14,88 +14,167 @@ class LiquidacionService:
     @staticmethod
     def generar_pdf(liquidaciones, filename=None):
         """
-        Genera un PDF con las liquidaciones proporcionadas
+        Genera un PDF con la liquidación de sueldo en formato chileno
         """
         if not filename:
             filename = f"liquidaciones_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
         
         filepath = os.path.join("temp", filename)
-        
-        # Crear directorio temp si no existe
         os.makedirs("temp", exist_ok=True)
         
-        # Crear el documento PDF
-        doc = SimpleDocTemplate(filepath, pagesize=A4)
-        elements = []
-        
-        # Estilos
-        styles = getSampleStyleSheet()
-        title_style = ParagraphStyle(
-            'CustomTitle',
-            parent=styles['Heading1'],
-            fontSize=24,
-            textColor=colors.HexColor('#21808d'),
-            spaceAfter=30,
-            alignment=TA_CENTER
+        # Configuración del documento
+        doc = SimpleDocTemplate(
+            filepath,
+            pagesize=letter,
+            rightMargin=1.5*cm,
+            leftMargin=1.5*cm,
+            topMargin=1.5*cm,
+            bottomMargin=1.5*cm
         )
         
-        # Título
-        title = Paragraph("Liquidaciones de Sueldo - Finantel Group", title_style)
-        elements.append(title)
+        elements = []
+        styles = getSampleStyleSheet()
+        
+        # Estilos personalizados
+        titulo_style = ParagraphStyle(
+            'TituloStyle',
+            parent=styles['Heading1'],
+            fontSize=16,
+            alignment=TA_CENTER,
+            spaceAfter=20
+        )
+        
+        subtitulo_style = ParagraphStyle(
+            'SubtituloStyle',
+            parent=styles['Normal'],
+            fontSize=12,
+            alignment=TA_CENTER,
+            spaceAfter=20
+        )
+        
+        seccion_style = ParagraphStyle(
+            'SeccionStyle',
+            parent=styles['Heading2'],
+            fontSize=10,
+            alignment=TA_LEFT,
+            spaceBefore=15,
+            spaceAfter=8
+        )
+        
+        # Datos de ejemplo para una liquidación (usar el primero de la lista)
+        liq = liquidaciones[0]
+        
+        # Encabezado con logo y datos de la empresa
+        datos_header = [
+            ['', 'Finantel Group'],
+            ['', 'RUT: 76.XXX.XXX-X'],
+            ['', 'Av. Ejemplo 123, Santiago']
+        ]
+        # Obtener la ruta absoluta del logo
+        logo_path = os.path.join(os.path.dirname(__file__), '..', 'templates', 'assets', 'img', 'logo.png')
+        if os.path.exists(logo_path):
+            from reportlab.platypus import Image
+            logo = Image(logo_path, width=2*cm, height=2*cm)
+            datos_header[0][0] = logo
+        
+        tabla_header = Table(datos_header, colWidths=[3*cm, 15*cm])
+        tabla_header.setStyle(TableStyle([
+            ('FONTNAME', (1, 0), (1, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (1, 0), (1, 0), 14),  # Nombre de empresa más grande
+            ('FONTSIZE', (1, 1), (1, -1), 10),  # Resto del texto más pequeño
+            ('TOPPADDING', (0, 0), (-1, -1), 1),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 1),
+            ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+            ('VALIGN', (0, 0), (0, -1), 'MIDDLE'),  # Centrar logo verticalmente
+            ('SPAN', (0, 0), (0, -1)),  # Fusionar celdas del logo
+            ('TEXTCOLOR', (1, 0), (1, -1), colors.black),
+        ]))
+        elements.append(tabla_header)
         elements.append(Spacer(1, 0.2*inch))
         
-        # Fecha
-        fecha_texto = f"Fecha de emisión: {datetime.now().strftime('%d/%m/%Y %H:%M')}"
-        fecha_style = ParagraphStyle(
-            'FechaStyle',
-            parent=styles['Normal'],
-            fontSize=10,
-            alignment=TA_CENTER
-        )
-        elements.append(Paragraph(fecha_texto, fecha_style))
-        elements.append(Spacer(1, 0.3*inch))
-        
-        # Preparar datos para la tabla
-        data = [['Nombre', 'RUT', 'Cargo', 'Sueldo Base', 'Horas Extras', 'Total']]
-        
-        for liq in liquidaciones:
-            data.append([
-                liq.nombre,
-                liq.rut,
-                liq.cargo,
-                f"${liq.sueldo_base:,.0f}",
-                f"${liq.horas_extras:,.0f}",
-                f"${liq.total:,.0f}"
-            ])
-        
-        # Crear tabla
-        table = Table(data, colWidths=[2*inch, 1.2*inch, 1.3*inch, 1*inch, 1*inch, 1*inch])
-        
-        # Estilo de la tabla
-        table.setStyle(TableStyle([
-            # Encabezado
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#21808d')),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 11),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-            ('TOPPADDING', (0, 0), (-1, 0), 12),
-            
-            # Cuerpo
-            ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-            ('GRID', (0, 0), (-1, -1), 1, colors.grey),
-            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 1), (-1, -1), 9),
-            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f5f5f5')]),
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ('TOPPADDING', (0, 1), (-1, -1), 8),
-            ('BOTTOMPADDING', (0, 1), (-1, -1), 8),
+        # Información del trabajador
+        elements.append(Paragraph("ANTECEDENTES DEL EMPLEADO", seccion_style))
+        datos_trabajador = [
+            ['Nombre', f"{liq.nombre}"],
+            ['RUT', f"{liq.rut}"],
+            ['Cargo', f"{liq.cargo}"],
+            ['Días Trabajados', f"{getattr(liq, 'dias_trabajados', 30)}"]
+        ]
+        tabla_trabajador = Table(datos_trabajador, colWidths=[4*cm, 14*cm])
+        tabla_trabajador.setStyle(TableStyle([
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 8),
+            ('TOPPADDING', (0, 0), (-1, -1), 1),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 1),
+            ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
         ]))
+        elements.append(tabla_trabajador)
         
-        elements.append(table)
+        # Detalle de remuneración
+        elements.append(Paragraph("HABERES", seccion_style))
+        haberes = [
+            ['CONCEPTO', 'MONTO'],
+            ['Sueldo Base', f"${liq.sueldo_base:,.0f}"],
+            ['Horas Extras', f"${getattr(liq, 'horas_extras_monto', 0.0):,.0f}"],
+            ['Gratificación', f"${getattr(liq, 'gratificacion', 0.0):,.0f}"]
+        ]
+        tabla_haberes = Table(haberes, colWidths=[12*cm, 6*cm])
+        tabla_haberes.setStyle(TableStyle([
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 8),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+            ('GRID', (0, 0), (-1, -1), 0.25, colors.grey),
+            ('ALIGN', (-1, 0), (-1, -1), 'RIGHT'),
+            ('TOPPADDING', (0, 0), (-1, -1), 4),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+        ]))
+        elements.append(tabla_haberes)
+        
+        # Descuentos previsionales
+        elements.append(Paragraph("DESCUENTOS PREVISIONALES", seccion_style))
+        descuentos = [
+            ['CONCEPTO', 'MONTO'],
+            ['AFP', f"${getattr(liq, 'afp_monto', 0.0):,.0f}"],
+            ['AFC', f"${getattr(liq, 'afc_monto', 0.0):,.0f}"],
+            ['Salud', f"${getattr(liq, 'salud_monto', 0.0):,.0f}"]
+            
+        ]
+        tabla_descuentos = Table(descuentos, colWidths=[12*cm, 6*cm])
+        tabla_descuentos.setStyle(TableStyle([
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 8),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+            ('GRID', (0, 0), (-1, -1), 0.25, colors.grey),
+            ('ALIGN', (-1, 0), (-1, -1), 'RIGHT'),
+            ('TOPPADDING', (0, 0), (-1, -1), 4),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+        ]))
+        elements.append(tabla_descuentos)
+        
+        # Total y líquido
+        total_imponible = getattr(liq, 'total_imponible', round(liq.sueldo_base + getattr(liq, 'horas_extras_monto', 0.0), 2))
+        total_descuentos = getattr(liq, 'total_descuentos', round(getattr(liq, 'afp_monto', 0.0) + getattr(liq, 'salud_monto', 0.0) + getattr(liq, 'afc_monto', 0.0), 2))
+        liquido = getattr(liq, 'liquido', round(total_imponible - total_descuentos, 2))
+
+        totales = [
+            ['TOTAL IMPONIBLE', f"${total_imponible:,.0f}"],
+            ['TOTAL DESCUENTOS', f"${total_descuentos:,.0f}"],
+            ['ALCANCE LÍQUIDO', f"${liquido:,.0f}"]
+        ]
+        tabla_totales = Table(totales, colWidths=[12*cm, 6*cm])
+        tabla_totales.setStyle(TableStyle([
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 9),
+            ('ALIGN', (-1, 0), (-1, -1), 'RIGHT'),
+            ('TOPPADDING', (0, 0), (-1, -1), 4),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+            ('LINEABOVE', (0, -1), (-1, -1), 1, colors.black),
+        ]))
+        elements.append(Spacer(1, 0.2*inch))
+        elements.append(tabla_totales)
+        
         
         # Construir PDF
         doc.build(elements)
-        
         return filepath

@@ -26,7 +26,11 @@ def create_liquidacion(liquidacion: LiquidacionCreate):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/pdf/{empleado_id}", response_class=FileResponse)
-def generar_pdf_liquidacion(empleado_id: int):
+def generar_pdf_liquidacion(
+    empleado_id: int,
+    horas_extra: int = 0,
+    dias_trabajados: int = 30
+):
     """
     GET: Genera un PDF con la liquidación de un empleado específico
     Este endpoint obtiene los datos (GET) por ID y los imprime en PDF
@@ -38,6 +42,19 @@ def generar_pdf_liquidacion(empleado_id: int):
         if not liquidacion:
             raise HTTPException(status_code=404, detail=f"No se encontró la liquidación para el empleado {empleado_id}")
         
+        # Actualizar datos con los parámetros recibidos
+        liquidacion.horas_extras = horas_extra
+        liquidacion.dias_trabajados = dias_trabajados
+        liquidacion.calcular_total()
+        
+        # Guardar la liquidación en la base de datos
+        try:
+            saved_id = LiquidacionModel.save_liquidacion(liquidacion)
+            print(f"Liquidación guardada con id: {saved_id}")
+        except Exception as e:
+            # No detener el flujo si falla el guardado, pero registrar
+            print(f"Warning: no se pudo guardar la liquidación en DB: {e}")
+
         # Generar PDF con el servicio (enviamos como lista de un elemento)
         filepath = LiquidacionService.generar_pdf([liquidacion])
         
@@ -46,7 +63,7 @@ def generar_pdf_liquidacion(empleado_id: int):
             filepath,
             media_type='application/pdf',
             filename=f"liquidacion_{empleado_id}_{datetime.now().strftime('%Y%m%d')}.pdf",
-            headers={"Content-Disposition": f"attachment; filename=liquidacion_{empleado_id}.pdf"}
+            headers={"Content-Disposition": f"inline; filename=liquidacion_{empleado_id}.pdf"}
         )
         
     except Exception as e:
@@ -56,7 +73,7 @@ def generar_pdf_liquidacion(empleado_id: int):
 def liquidaciones_vista(request: Request):
     """Vista HTML para mostrar y generar liquidaciones"""
     liquidaciones = LiquidacionModel.get_all()
-    return templates.TemplateResponse("liquidaciones.html", {
+    return templates.TemplateResponse("home.html", {
         "request": request,
         "titulo": "Liquidaciones | Finantel Group",
         "liquidaciones": liquidaciones

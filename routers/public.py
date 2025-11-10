@@ -13,7 +13,12 @@ def login(request: Request):
 
 @router.get("/home", response_class=HTMLResponse)
 def home(request: Request):
-    return templates.TemplateResponse("home.html", {"request": request, "titulo": "Home | Finantel Group"})
+    empleados = EmpleadosModel.get_all()
+    return templates.TemplateResponse("home.html", {
+        "request": request, 
+        "titulo": "Home | Finantel Group",
+        "empleados": empleados
+    })
 
 @router.get("/empleados", response_class=HTMLResponse)
 def empleados(request: Request):

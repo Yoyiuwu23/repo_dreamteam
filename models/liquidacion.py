@@ -1,7 +1,8 @@
 # models/liquidacion.py
 from core.database import get_connection
 from dto.liquidacion import LiquidacionCreate, LiquidacionResponse
-from typing import List
+from typing import List, Optional
+from datetime import datetime
 
 class LiquidacionModel:
     @staticmethod
@@ -20,7 +21,11 @@ class LiquidacionModel:
                     CONCAT(e.nombres, ' ', e.apellidos) as nombre,
                     e.rut,
                     'Empleado' as cargo,
+                    c.id as contrato_id,
                     c.sueldo_base,
+                    c.afp_id,
+                    c.salud_id,
+                    c.afc_id,
                     0 as horas_extras
                 FROM empleados e
                 JOIN contratos c ON e.id = c.empleado_id
@@ -57,7 +62,11 @@ class LiquidacionModel:
                     CONCAT(e.nombres, ' ', e.apellidos) as nombre,
                     e.rut,
                     'Empleado' as cargo,
+                    c.id as contrato_id,
                     c.sueldo_base,
+                    c.afp_id,
+                    c.salud_id,
+                    c.afc_id,
                     0 as horas_extras
                 FROM empleados e
                 JOIN contratos c ON e.id = c.empleado_id
@@ -100,6 +109,54 @@ class LiquidacionModel:
             print(e)
             cnx.rollback()
             raise e
+        finally:
+            cursor.close()
+            cnx.close()
+
+    @staticmethod
+    def save_liquidacion(liq: LiquidacionResponse, periodo: Optional[int] = None, mes: Optional[int] = None) -> int:
+        """Inserta una liquidación en la tabla `liquidaciones` y retorna el id generado."""
+        cnx = get_connection()
+        if not cnx:
+            raise Exception("No se pudo conectar a la base de datos")
+
+        cursor = cnx.cursor()
+        try:
+            # Determinar periodo y mes por defecto
+            now = datetime.now()
+            if periodo is None:
+                periodo = now.year
+            if mes is None:
+                mes = now.month
+
+            sql = (
+                "INSERT INTO liquidaciones (contrato_id, periodo, mes, sueldo_base, horas_extra, gratificacion, total_imponible, total_descuentos, liquido_a_pagar)"
+                " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            )
+
+            contrato_id = getattr(liq, 'contrato_id', None)
+            if contrato_id is None:
+                raise Exception('Contrato_id no disponible para insertar la liquidación')
+
+            params = (
+                contrato_id,
+                periodo,
+                mes,
+                liq.sueldo_base,
+                getattr(liq, 'horas_extras_monto', 0.0),
+                getattr(liq, 'gratificacion', 0.0),
+                getattr(liq, 'total_imponible', 0.0),
+                getattr(liq, 'total_descuentos', 0.0),
+                getattr(liq, 'liquido', 0.0)
+            )
+
+            cursor.execute(sql, params)
+            cnx.commit()
+            inserted_id = cursor.lastrowid
+            return inserted_id
+        except Exception:
+            cnx.rollback()
+            raise
         finally:
             cursor.close()
             cnx.close()
